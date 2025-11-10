@@ -2,28 +2,242 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>La classe flexible – témoignage d&#39;une chef d&#39;établissement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La classe flexible – témoignage d'un chef d'établissement</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #F5F7FB; color: #222; }
-    .progression { margin-bottom: 24px; display: flex; gap: 10px; }
-    .step { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #1E90FF; display: flex; align-items: center; justify-content: center; background:#fff; opacity: 0.7; }
-    .step.active { background: #1E90FF; color: #fff; font-weight: bold; opacity: 1; }
-    .section { border-radius: 12px; background: #EDF1FA; margin-bottom: 24px; padding: 18px 20px; box-shadow: 0 2px 12px #0002; }
-    label { font-weight: bold; }
-    input[type="text"], textarea { width: 100%; margin-bottom: 8px; padding: 5px; border-radius: 6px; border: 1px solid #b4c3d6;}
-    button { margin-top: 5px; background: #1E90FF; color: #fff; border:none; border-radius: 5px; padding: 7px 15px; cursor:pointer; }
-    .error { color: #f33; font-weight: bold; }
-    .success { color: #2c8b3a; font-weight: bold; }
-    .hint { background: #fff1a5; color:#b38800; padding:3px 9px; border-radius:4px; font-size: 0.95em; margin-top: 5px; display: inline-block; }
-    .notearea { min-height: 90px; }
-    .hidden { display: none; }
-    #mindmap-preview img { max-width: 200px; border:2px solid #888; border-radius:8px;}
-    #record-btn, #stop-btn { margin-left: 7px; }
-    audio { width: 100%; outline:none; }
+    * {
+      box-sizing: border-box;
+    }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      padding: 1em; 
+      background: #F5F7FB; 
+      color: #222; 
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { 
+      font-size: 2em; 
+      margin-bottom: 0.3em;
+      color: #1E90FF;
+    }
+    h2 { 
+      font-size: 1.5em; 
+      margin-bottom: 0.8em;
+      color: #333;
+    }
+    h3 { 
+      font-size: 1.2em; 
+      color: #555;
+    }
+    .intro {
+      font-size: 1.1em;
+      color: #555;
+      margin-bottom: 1.5em;
+      font-style: italic;
+    }
+    .progression { 
+      margin-bottom: 30px; 
+      display: flex; 
+      gap: 15px; 
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .step { 
+      width: 70px; 
+      height: 70px; 
+      border-radius: 50%; 
+      border: 3px solid #1E90FF; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: #fff; 
+      opacity: 0.5; 
+      font-size: 1.3em;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .step.active { 
+      background: #1E90FF; 
+      color: #fff; 
+      opacity: 1;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
+    }
+    .section { 
+      border-radius: 15px; 
+      background: #EDF1FA; 
+      margin-bottom: 30px; 
+      padding: 25px 30px; 
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    }
+    label { 
+      font-weight: 600; 
+      font-size: 1.1em;
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="text"], textarea { 
+      width: 100%; 
+      margin-bottom: 12px; 
+      padding: 10px 12px; 
+      border-radius: 8px; 
+      border: 2px solid #b4c3d6;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #1E90FF;
+    }
+    button { 
+      margin-top: 8px; 
+      background: #1E90FF; 
+      color: #fff; 
+      border: none; 
+      border-radius: 8px; 
+      padding: 10px 20px; 
+      cursor: pointer; 
+      font-size: 1em;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #1873CC;
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .error { 
+      color: #f33; 
+      font-weight: bold; 
+      font-size: 1em;
+    }
+    .success { 
+      color: #2c8b3a; 
+      font-weight: bold; 
+      font-size: 1em;
+    }
+    .hint { 
+      background: #fff1a5; 
+      color: #b38800; 
+      padding: 8px 15px; 
+      border-radius: 8px; 
+      font-size: 1em; 
+      margin-top: 10px; 
+      display: inline-block;
+    }
+    .notearea { 
+      min-height: 120px; 
+      font-size: 1em;
+    }
+    .hidden { 
+      display: none; 
+    }
+    #mindmap-preview img { 
+      max-width: 100%; 
+      height: auto;
+      border: 3px solid #888; 
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+    #essai1-count, #essai2-count {
+      font-size: 0.95em;
+      color: #666;
+      margin-left: 10px;
+    }
+    audio { 
+      width: 100%; 
+      outline: none; 
+      margin: 15px 0;
+    }
+    #dl-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: #1E90FF;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1em;
+    }
+    #dl-link:hover {
+      text-decoration: underline;
+    }
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .export-buttons button {
+      margin-top: 0;
+    }
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      color: #666;
+      font-size: 0.9em;
+      border-top: 2px solid #ccc;
+    }
+    footer a {
+      color: #1E90FF;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.5em;
+        font-size: 14px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      h2 {
+        font-size: 1.3em;
+      }
+      .step {
+        width: 55px;
+        height: 55px;
+        font-size: 1.1em;
+      }
+      .section {
+        padding: 15px 20px;
+      }
+      .progression {
+        gap: 10px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3em;
+      }
+      .step {
+        width: 50px;
+        height: 50px;
+        font-size: 1em;
+      }
+      .export-buttons {
+        flex-direction: column;
+      }
+      .export-buttons button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>La classe flexible&nbsp;: témoignage d'une chef d'établissement</h1>
+  <h1>La classe flexible&nbsp;: témoignage d'un chef d'établissement</h1>
+  <p class="intro">Écoutez ces audios avec attention.</p>
 
   <nav class="progression">
     <div class="step active" id="step1">1</div>
@@ -60,26 +274,31 @@
   <div class="section hidden" id="audio3-section">
     <h2>Étape 3&nbsp;: Restitution plénière</h2>
     <audio id="audio3" controls src="audio3.mp3"></audio>
-    <p>Soumettez une carte mentale des éléments de la classe flexible pour une restitution en plénière.</p>
+    <p>Soumettez une carte mentale des éléments de la classe flexible pour un échange avec l'autre groupe.</p>
     <input type="file" accept="image/*" id="mindmap-input">
     <button onclick="validateMindmap()" id="validate-btn" disabled>Valider l'upload</button>
     <div id="mindmap-preview"></div>
     <a id="dl-link" class="hidden" download="ma_cartementale.jpg">Télécharger l'image</a>
     <div id="mindmap-confirm" class="success"></div>
-    <hr>
-    <h3>Enregistrement vocal – Votre avis</h3>
-    <button id="record-btn" onclick="startRecording()">Enregistrer</button>
-    <button id="stop-btn" onclick="stopRecording()" disabled>Arrêter</button>
-    <audio id="audio-playback" controls class="hidden"></audio>
-    <div id="audio-upload-msg"></div>
   </div>
 
   <div class="section">
-    <h2>Notes personnelles&nbsp;</h2>
+    <h2>Notes personnelles</h2>
     <textarea id="notes" class="notearea" placeholder="Prenez vos notes ici..."></textarea>
     <div id="notes-status"></div>
+    <div class="export-buttons">
+      <button onclick="exporterNotesTXT()">Exporter en TXT</button>
+      <button onclick="exporterNotesPDF()">Exporter en PDF</button>
+    </div>
   </div>
+
+  <footer>
+    <p>Créé par <strong>Amélie Silvert</strong><br>
+    DRANE Lille – Académie de Lille<br>
+    <a href="mailto:amelie.silvert@ac-lille.fr">amelie.silvert@ac-lille.fr</a></p>
+  </footer>
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     // Avancement jeu
     function majProgression(etape) {
@@ -95,6 +314,42 @@
       document.getElementById('notes-status').textContent = "Notes sauvegardées !";
       setTimeout(()=>{document.getElementById('notes-status').textContent='';}, 1500);
     };
+
+    // Export notes en TXT
+    function exporterNotesTXT() {
+      const notes = document.getElementById('notes').value;
+      if(!notes.trim()) {
+        alert('Aucune note à exporter !');
+        return;
+      }
+      const blob = new Blob([notes], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mes_notes_classe_flexible.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Export notes en PDF
+    function exporterNotesPDF() {
+      const notes = document.getElementById('notes').value;
+      if(!notes.trim()) {
+        alert('Aucune note à exporter !');
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(16);
+      doc.text('Mes notes - La classe flexible', 20, 20);
+      doc.setFontSize(12);
+      
+      const lignes = doc.splitTextToSize(notes, 170);
+      doc.text(lignes, 20, 35);
+      
+      doc.save('mes_notes_classe_flexible.pdf');
+    }
 
     // Afficher la question après écoute de l'audio 1
     const audio1 = document.getElementById('audio1');
@@ -113,7 +368,7 @@
     majEssais1();
     function verifierClef1(f) {
       const val = document.getElementById("input-clef1").value.trim().toLowerCase().replace(/[\s\-]/g, "");
-      const bons = ["electrostatique","electrostatiques"];
+      const bons = ["electrostatique","electrostatiques","électrostatique","électrostatiques"];
       essais1++;
       localStorage.setItem("lflex-essais1", essais1);
       majEssais1();
@@ -189,46 +444,6 @@
         };
         reader.readAsDataURL(mindmapFile);
       }
-    }
-
-    // ENREGISTREMENT VOCAL — WebAudio API
-    let recorder, audioData = [];
-    const recordBtn = document.getElementById('record-btn');
-    const stopBtn = document.getElementById('stop-btn');
-    const playback = document.getElementById('audio-playback');
-    const audioMsg = document.getElementById('audio-upload-msg');
-    let mediaStream;
-
-    function startRecording() {
-      navigator.mediaDevices.getUserMedia({audio:true})
-      .then(function(stream) {
-        mediaStream = stream;
-        recorder = new MediaRecorder(stream);
-        audioData = [];
-        recorder.ondataavailable = e => audioData.push(e.data);
-        recorder.onstop = e => {
-          const blob = new Blob(audioData, {type: 'audio/webm'});
-          playback.src = URL.createObjectURL(blob);
-          playback.classList.remove('hidden');
-          audioMsg.textContent = "Votre audio est prêt à être écouté.";
-        };
-        recorder.start();
-        recordBtn.disabled = true;
-        stopBtn.disabled = false;
-        audioMsg.textContent = "Enregistrement en cours...";
-      }).catch(function(){
-        audioMsg.textContent = "Impossible de démarrer l'enregistrement.";
-      });
-    }
-
-    function stopRecording() {
-      if(recorder && recorder.state !== "inactive") {
-        recorder.stop();
-        mediaStream.getTracks().forEach(t=>t.stop());
-      }
-      recordBtn.disabled = false;
-      stopBtn.disabled = true;
-      audioMsg.textContent = "Enregistrement terminé.";
     }
   </script>
 </body>
