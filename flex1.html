@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>La classe flexible – témoignage d&#39;une chef d&#39;établissement</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2em; background: #F5F7FB; color: #222; }
+    .progression { margin-bottom: 24px; display: flex; gap: 10px; }
+    .step { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #1E90FF; display: flex; align-items: center; justify-content: center; background:#fff; opacity: 0.7; }
+    .step.active { background: #1E90FF; color: #fff; font-weight: bold; opacity: 1; }
+    .section { border-radius: 12px; background: #EDF1FA; margin-bottom: 24px; padding: 18px 20px; box-shadow: 0 2px 12px #0002; }
+    label { font-weight: bold; }
+    input[type="text"], textarea { width: 100%; margin-bottom: 8px; padding: 5px; border-radius: 6px; border: 1px solid #b4c3d6;}
+    button { margin-top: 5px; background: #1E90FF; color: #fff; border:none; border-radius: 5px; padding: 7px 15px; cursor:pointer; }
+    .error { color: #f33; font-weight: bold; }
+    .success { color: #2c8b3a; font-weight: bold; }
+    .hint { background: #fff1a5; color:#b38800; padding:3px 9px; border-radius:4px; font-size: 0.95em; margin-top: 5px; display: inline-block; }
+    .notearea { min-height: 90px; }
+    .hidden { display: none; }
+    #mindmap-preview img { max-width: 200px; border:2px solid #888; border-radius:8px;}
+    #record-btn, #stop-btn { margin-left: 7px; }
+    audio { width: 100%; outline:none; }
+  </style>
+</head>
+<body>
+  <h1>La classe flexible&nbsp;: témoignage d'une chef d'établissement</h1>
+
+  <nav class="progression">
+    <div class="step active" id="step1">1</div>
+    <div class="step" id="step2">2</div>
+    <div class="step" id="step3">3</div>
+    <div class="step" id="step4">4</div>
+  </nav>
+
+  <div class="section" id="audio1-section">
+    <h2>Étape 1&nbsp;: Première écoute</h2>
+    <audio id="audio1" controls src="audio1.mp3"></audio>
+    <form onsubmit="return verifierClef1(this);" id="form-clef1" class="hidden">
+      <label>Quel adjectif est associé aux feuilles repositionnables&nbsp;?</label>
+      <input type="text" id="input-clef1" placeholder="Entrez le mot..." autocomplete="off">
+      <button type="submit">Valider</button>
+      <span id="essai1-count"></span>
+      <div id="clef1-msg"></div>
+      <div id="clef1-hint" class="hint hidden"></div>
+    </form>
+  </div>
+
+  <div class="section hidden" id="audio2-section">
+    <h2>Étape 2&nbsp;: Deuxième écoute</h2>
+    <audio id="audio2" controls src="audio2.mp3"></audio>
+    <form onsubmit="return verifierClef2(this);" id="form-clef2" class="hidden">
+      <label>Quel mot indique un travail collégial entre élèves&nbsp;?</label>
+      <input type="text" id="input-clef2" placeholder="Entrez le mot..." autocomplete="off">
+      <button type="submit">Valider</button>
+      <span id="essai2-count"></span>
+      <div id="clef2-msg"></div>
+    </form>
+  </div>
+  
+  <div class="section hidden" id="audio3-section">
+    <h2>Étape 3&nbsp;: Restitution plénière</h2>
+    <audio id="audio3" controls src="audio3.mp3"></audio>
+    <p>Soumettez une carte mentale des éléments de la classe flexible pour une restitution en plénière.</p>
+    <input type="file" accept="image/*" id="mindmap-input">
+    <button onclick="validateMindmap()" id="validate-btn" disabled>Valider l'upload</button>
+    <div id="mindmap-preview"></div>
+    <a id="dl-link" class="hidden" download="ma_cartementale.jpg">Télécharger l'image</a>
+    <div id="mindmap-confirm" class="success"></div>
+    <hr>
+    <h3>Enregistrement vocal – Votre avis</h3>
+    <button id="record-btn" onclick="startRecording()">Enregistrer</button>
+    <button id="stop-btn" onclick="stopRecording()" disabled>Arrêter</button>
+    <audio id="audio-playback" controls class="hidden"></audio>
+    <div id="audio-upload-msg"></div>
+  </div>
+
+  <div class="section">
+    <h2>Notes personnelles&nbsp;</h2>
+    <textarea id="notes" class="notearea" placeholder="Prenez vos notes ici..."></textarea>
+    <div id="notes-status"></div>
+  </div>
+  
+  <script>
+    // Avancement jeu
+    function majProgression(etape) {
+      for(let i=1;i<=4;i++) {
+        document.getElementById("step"+i).className = "step" + (i<=etape?' active':'');
+      }
+    }
+
+    // NOTES — LocalStorage
+    const notesEl = document.getElementById("notes");
+    notesEl.value = localStorage.getItem("lflex-notes")||"";
+    notesEl.oninput = ()=>{ localStorage.setItem("lflex-notes", notesEl.value);
+      document.getElementById('notes-status').textContent = "Notes sauvegardées !";
+      setTimeout(()=>{document.getElementById('notes-status').textContent='';}, 1500);
+    };
+
+    // Afficher la question après écoute de l'audio 1
+    const audio1 = document.getElementById('audio1');
+    audio1.addEventListener('ended', function() {
+      document.getElementById('form-clef1').classList.remove('hidden');
+    });
+
+    // Afficher la question après écoute de l'audio 2
+    const audio2 = document.getElementById('audio2');
+    audio2.addEventListener('ended', function() {
+      document.getElementById('form-clef2').classList.remove('hidden');
+    });
+
+    // AUDIO 1 — Validation clef, essais, indice
+    let essais1 = parseInt(localStorage.getItem("lflex-essais1")||"0");
+    majEssais1();
+    function verifierClef1(f) {
+      const val = document.getElementById("input-clef1").value.trim().toLowerCase().replace(/[\s\-]/g, "");
+      const bons = ["electrostatique","electrostatiques"];
+      essais1++;
+      localStorage.setItem("lflex-essais1", essais1);
+      majEssais1();
+      if(bons.includes(val)){
+        majProgression(2);
+        document.getElementById("clef1-msg").innerHTML = '<span class="success">Bravo ! Passons à la suite</span>';
+        setTimeout(()=>{
+          document.getElementById("audio2-section").classList.remove("hidden");
+        },700);
+        return false;
+      }
+      document.getElementById("clef1-msg").innerHTML = '<span class="error">Non, essayez encore !</span>';
+      // Indice au 3ème essai
+      if(essais1>=3){
+        document.getElementById("clef1-hint").classList.remove("hidden");
+        document.getElementById("clef1-hint").textContent = 
+          "Indice : les feuilles sont détachables et déplaçables";
+      }
+      return false;
+    }
+    function majEssais1() {
+      document.getElementById("essai1-count").textContent = "Essais : "+essais1;
+    }
+
+    // AUDIO 2 — Validation clef, essais
+    let essais2 = parseInt(localStorage.getItem("lflex-essais2")||"0");
+    majEssais2();
+    function verifierClef2(f) {
+      const val = document.getElementById("input-clef2").value.trim().toLowerCase();
+      essais2++;
+      localStorage.setItem("lflex-essais2", essais2);
+      majEssais2();
+      if(val === "collaboratif"){
+        majProgression(3);
+        document.getElementById("clef2-msg").innerHTML = '<span class="success">Bravo ! Passons à la suite</span>';
+        setTimeout(()=>{
+          document.getElementById("audio3-section").classList.remove("hidden");
+        },700);
+        return false;
+      }
+      document.getElementById("clef2-msg").innerHTML = '<span class="error">Non, essayez de nouveau !</span>';
+      return false;
+    }
+    function majEssais2() {
+      document.getElementById("essai2-count").textContent = "Essais : "+essais2;
+    }
+
+    // MINDMAP — Affichage et download
+    const mindmapInput = document.getElementById('mindmap-input');
+    const mindmapPreview = document.getElementById('mindmap-preview');
+    const validateBtn = document.getElementById('validate-btn');
+    let mindmapFile = null;
+
+    mindmapInput.addEventListener('change', function() {
+      const f = this.files[0];
+      if(f) {
+        const url = URL.createObjectURL(f);
+        mindmapPreview.innerHTML = "<img src='"+url+"'>";
+        validateBtn.disabled = false;
+        mindmapFile = f;
+      }
+    });
+
+    function validateMindmap() {
+      if(mindmapFile) {
+        document.getElementById('mindmap-confirm').textContent = "Votre carte mentale a été prise en compte !";
+        majProgression(4);
+        document.getElementById('dl-link').classList.remove('hidden');
+        // Simule le download local
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('dl-link').href = e.target.result;
+        };
+        reader.readAsDataURL(mindmapFile);
+      }
+    }
+
+    // ENREGISTREMENT VOCAL — WebAudio API
+    let recorder, audioData = [];
+    const recordBtn = document.getElementById('record-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const playback = document.getElementById('audio-playback');
+    const audioMsg = document.getElementById('audio-upload-msg');
+    let mediaStream;
+
+    function startRecording() {
+      navigator.mediaDevices.getUserMedia({audio:true})
+      .then(function(stream) {
+        mediaStream = stream;
+        recorder = new MediaRecorder(stream);
+        audioData = [];
+        recorder.ondataavailable = e => audioData.push(e.data);
+        recorder.onstop = e => {
+          const blob = new Blob(audioData, {type: 'audio/webm'});
+          playback.src = URL.createObjectURL(blob);
+          playback.classList.remove('hidden');
+          audioMsg.textContent = "Votre audio est prêt à être écouté.";
+        };
+        recorder.start();
+        recordBtn.disabled = true;
+        stopBtn.disabled = false;
+        audioMsg.textContent = "Enregistrement en cours...";
+      }).catch(function(){
+        audioMsg.textContent = "Impossible de démarrer l'enregistrement.";
+      });
+    }
+
+    function stopRecording() {
+      if(recorder && recorder.state !== "inactive") {
+        recorder.stop();
+        mediaStream.getTracks().forEach(t=>t.stop());
+      }
+      recordBtn.disabled = false;
+      stopBtn.disabled = true;
+      audioMsg.textContent = "Enregistrement terminé.";
+    }
+  </script>
+</body>
+</html>
