@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard FLEX - Suivi des groupes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-item strong {
+            display: block;
+            font-size: 1.5em;
+            color: #667eea;
+        }
+
+        .stat-item span {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .group-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .group-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .progress-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .app-link {
+            display: block;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .app-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .checklist {
+            margin-top: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .checklist-item:hover {
+            background: #e9ecef;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checklist-item.completed {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .token-counter {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .token-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #856404;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .token-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .token-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .token-btn-minus {
+            background: #f44336;
+            color: white;
+        }
+
+        .token-btn-plus {
+            background: #4caf50;
+            color: white;
+        }
+
+        .token-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .links-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .link-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .link-icon {
+            font-size: 2em;
+        }
+
+        @media (max-width: 768px) {
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Dashboard FLEX - Suivi des groupes</h1>
+            <div class="header-info">
+                <div class="stats">
+                    <div class="stat-item">
+                        <strong id="totalProgress">0%</strong>
+                        <span>Progression globale</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong id="completedTasks">0</strong>
+                        <span>Tâches complétées</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong id="totalTokens">0</strong>
+                        <span>Jetons gagnés</span>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="exportResults()">📊 Exporter</button>
+                    <button class="btn btn-primary" onclick="resetAll()">🔄 Réinitialiser</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="links-section">
+            <h2 style="color: #2c3e50; margin-bottom: 15px;">🔗 Liens des applications</h2>
+            <div class="links-grid">
+                <a href="https://silverteacher.github.io/escape/chrono.html" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Chronomètre</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Escape Game</div>
+                    </div>
+                    <div class="link-icon">⏱️</div>
+                </a>
+                <a href="https://silverteacher.github.io/simulateurflexible/index.html" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Simulateur Flexible</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Simulation</div>
+                    </div>
+                    <div class="link-icon">🎮</div>
+                </a>
+                <a href="https://silverteacher.github.io/flexible2/groupe2.html" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Flexible 2</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Groupe 2</div>
+                    </div>
+                    <div class="link-icon">📱</div>
+                </a>
+                <a href="https://silverteacher.github.io/classe-flexible/index.html" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Classe Flexible</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Application principale</div>
+                    </div>
+                    <div class="link-icon">🏫</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="groups-grid">
+            <!-- Groupe 1: Les Beatles -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-name">🎸 Les Beatles</div>
+                    <div class="progress-badge" id="progress-beatles">0%</div>
+                </div>
+                <a href="https://silverteacher.github.io/escape/chrono.html" target="_blank" class="app-link">
+                    ⏱️ Chronomètre Escape
+                </a>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="beatles-1" onchange="updateProgress('beatles')">
+                        <label for="beatles-1">Démarrage de l'activité</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="beatles-2" onchange="updateProgress('beatles')">
+                        <label for="beatles-2">Première énigme résolue</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="beatles-3" onchange="updateProgress('beatles')">
+                        <label for="beatles-3">Deuxième énigme résolue</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="beatles-4" onchange="updateProgress('beatles')">
+                        <label for="beatles-4">Activité terminée</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groupe 2: Les Experts -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-name">🔍 Les Experts</div>
+                    <div class="progress-badge" id="progress-experts">0%</div>
+                </div>
+                <a href="https://silverteacher.github.io/simulateurflexible/index.html" target="_blank" class="app-link">
+                    🎮 Simulateur Flexible
+                </a>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="experts-1" onchange="updateProgress('experts')">
+                        <label for="experts-1">Démarrage de l'activité</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="experts-2" onchange="updateProgress('experts')">
+                        <label for="experts-2">Premier scénario complété</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="experts-3" onchange="updateProgress('experts')">
+                        <label for="experts-3">Deuxième scénario complété</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="experts-4" onchange="updateProgress('experts')">
+                        <label for="experts-4">Activité terminée</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groupe 3: Les Rolling Stones -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-name">🎤 Les Rolling Stones</div>
+                    <div class="progress-badge" id="progress-stones">0%</div>
+                </div>
+                <a href="https://silverteacher.github.io/flexible2/groupe2.html" target="_blank" class="app-link">
+                    📱 Flexible 2
+                </a>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="stones-1" onchange="updateProgress('stones')">
+                        <label for="stones-1">Démarrage de l'activité</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="stones-2" onchange="updateProgress('stones')">
+                        <label for="stones-2">Première étape validée</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="stones-3" onchange="updateProgress('stones')">
+                        <label for="stones-3">Deuxième étape validée</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="stones-4" onchange="updateProgress('stones')">
+                        <label for="stones-4">Activité terminée</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groupe 4: L'Escape Team (FLEX Bataille) -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-name">🃏 L'Escape Team</div>
+                    <div class="progress-badge" id="progress-escape">0%</div>
+                </div>
+                <a href="https://silverteacher.github.io/classe-flexible/index.html" target="_blank" class="app-link">
+                    🏫 FLEX Bataille (Jeu de cartes)
+                </a>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="escape-1" onchange="updateProgress('escape')">
+                        <label for="escape-1">Distribution des cartes effectuée</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="escape-2" onchange="updateProgress('escape')">
+                        <label for="escape-2">Arbitre désigné</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="escape-3" onchange="updateProgress('escape')">
+                        <label for="escape-3">Partie en cours</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="escape-4" onchange="updateProgress('escape')">
+                        <label for="escape-4">Partie terminée</label>
+                    </div>
+                </div>
+                
+                <div class="token-counter">
+                    <div style="text-align: center; font-weight: bold; color: #856404; margin-bottom: 10px;">
+                        🪙 Compteur de jetons
+                    </div>
+                    <div class="token-display" id="token-display">0</div>
+                    <div class="token-controls">
+                        <button class="token-btn token-btn-minus" onclick="changeTokens(-1)">−</button>
+                        <button class="token-btn token-btn-plus" onclick="changeTokens(1)">+</button>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #856404;">
+                        <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9em;" onclick="changeTokens(5)">+5</button>
+                        <button class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9em; margin-left: 10px;" onclick="changeTokens(-5)">-5</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialisation
+        let tokens = parseInt(localStorage.getItem('tokens')) || 0;
+        document.getElementById('token-display').textContent = tokens;
+
+        // Charger l'état des checkboxes
+        const groups = ['beatles', 'experts', 'stones', 'escape'];
+        groups.forEach(group => {
+            for (let i = 1; i <= 4; i++) {
+                const checkbox = document.getElementById(`${group}-${i}`);
+                const saved = localStorage.getItem(`${group}-${i}`);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                    checkbox.parentElement.classList.add('completed');
+                }
+            }
+            updateProgress(group);
+        });
+
+        updateGlobalStats();
+
+        // Gestion des jetons
+        function changeTokens(amount) {
+            tokens += amount;
+            if (tokens < 0) tokens = 0;
+            document.getElementById('token-display').textContent = tokens;
+            localStorage.setItem('tokens', tokens);
+            updateGlobalStats();
+        }
+
+        // Mise à jour de la progression d'un groupe
+        function updateProgress(group) {
+            let completed = 0;
+            for (let i = 1; i <= 4; i++) {
+                const checkbox = document.getElementById(`${group}-${i}`);
+                if (checkbox.checked) {
+                    completed++;
+                    checkbox.parentElement.classList.add('completed');
+                    localStorage.setItem(`${group}-${i}`, 'true');
+                } else {
+                    checkbox.parentElement.classList.remove('completed');
+                    localStorage.setItem(`${group}-${i}`, 'false');
+                }
+            }
+            const percentage = Math.round((completed / 4) * 100);
+            document.getElementById(`progress-${group}`).textContent = percentage + '%';
+            updateGlobalStats();
+        }
+
+        // Mise à jour des statistiques globales
+        function updateGlobalStats() {
+            let totalCompleted = 0;
+            let totalTasks = 0;
+            
+            groups.forEach(group => {
+                for (let i = 1; i <= 4; i++) {
+                    totalTasks++;
+                    if (document.getElementById(`${group}-${i}`).checked) {
+                        totalCompleted++;
+                    }
+                }
+            });
+
+            const globalProgress = Math.round((totalCompleted / totalTasks) * 100);
+            document.getElementById('totalProgress').textContent = globalProgress + '%';
+            document.getElementById('completedTasks').textContent = totalCompleted + '/' + totalTasks;
+            document.getElementById('totalTokens').textContent = tokens;
+        }
+
+        // Export des résultats
+        function exportResults() {
+            const results = {
+                date: new Date().toLocaleString('fr-FR'),
+                groupes: {}
+            };
+
+            groups.forEach(group => {
+                const groupName = {
+                    'beatles': 'Les Beatles',
+                    'experts': 'Les Experts',
+                    'stones': 'Les Rolling Stones',
+                    'escape': 'L\'Escape Team'
+                }[group];
+
+                let completed = 0;
+                const tasks = [];
+                
+                for (let i = 1; i <= 4; i++) {
+                    const checkbox = document.getElementById(`${group}-${i}`);
+                    const label = checkbox.nextElementSibling.textContent;
+                    tasks.push({
+                        task: label,
+                        completed: checkbox.checked
+                    });
+                    if (checkbox.checked) completed++;
+                }
+
+                results.groupes[groupName] = {
+                    progression: Math.round((completed / 4) * 100) + '%',
+                    taches: tasks
+                };
+            });
+
+            results.tokens = tokens;
+
+            const blob = new Blob([JSON.stringify(results, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dashboard-flex-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            
+            alert('✅ Résultats exportés avec succès !');
+        }
+
+        // Réinitialisation
+        function resetAll() {
+            if (confirm('⚠️ Voulez-vous vraiment réinitialiser tous les groupes ? Cette action est irréversible.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
