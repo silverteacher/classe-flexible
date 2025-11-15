@@ -281,6 +281,45 @@
             text-align: center;
         }
 
+        /* SECTION INSTRUCTIONS */
+        .instructions-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .instruction-card {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 35px;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.25);
+        }
+
+        .instruction-card h3 {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .instruction-card p {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.2em;
+            line-height: 1.7;
+            text-align: center;
+        }
+
         .help-section {
             background: rgba(255,107,107,0.15);
             backdrop-filter: blur(15px);
@@ -333,7 +372,7 @@
         /* PAGE 4 - DASHBOARD AVEC CARTES FLIP */
         .page-4 {
             background: linear-gradient(135deg, #e8f4f8 0%, #f0e6f6 100%);
-            padding: 15px;
+            padding: 5px;
             padding-top: 150px;
             padding-bottom: 80px;
         }
@@ -416,8 +455,9 @@
         }
 
         .container {
-            max-width: 1600px;
-            margin: 0 auto;
+            width: 100%;
+            margin: 0;
+            padding: 0 5px;
         }
 
         header {
@@ -533,15 +573,45 @@
         /* GRILLE DE CARTES FLIP */
         .groups-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 25px;
             margin-bottom: 20px;
             perspective: 1000px;
+            width: 100%;
+        }
+
+        /* 3 colonnes sur grands écrans */
+        @media (min-width: 1400px) {
+            .groups-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+        }
+
+        /* 2 colonnes sur écrans moyens */
+        @media (min-width: 769px) and (max-width: 1399px) {
+            .groups-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+
+        /* 1 colonne sur mobile */
+        @media (max-width: 768px) {
+            .groups-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .flip-card {
+                height: 420px;
+            }
         }
 
         /* CARTE FLIP CONTAINER */
         .flip-card {
-            height: 450px;
+            height: 480px;
+            width: 100%;
             position: relative;
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -892,6 +962,23 @@
                 font-size: 1.8em;
             }
 
+            .instructions-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .instruction-card {
+                padding: 25px;
+            }
+
+            .instruction-card h3 {
+                font-size: 1.5em;
+            }
+
+            .instruction-card p {
+                font-size: 1.1em;
+            }
+
             .nav-button {
                 padding: 15px 30px;
                 font-size: 1.1em;
@@ -909,14 +996,6 @@
 
             .page-4 {
                 padding-top: 200px;
-            }
-
-            .groups-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .flip-card {
-                height: 400px;
             }
 
             .card-front-icon {
@@ -979,49 +1058,28 @@
         </button>
     </div>
 
-    <!-- PAGE 3: CHOIX DES ÉQUIPES -->
+    <!-- PAGE 3: INSTRUCTIONS -->
     <div class="page page-3">
         <div class="teams-container">
             <div class="teams-header">
-                <h2>🎪 Choisissez votre équipe</h2>
-                <p>6 équipes avec nous ce matin !</p>
+                <h2>🎯 Préparation de l'aventure</h2>
+                <p>Quelques consignes avant de commencer</p>
             </div>
 
-            <div class="teams-grid">
-                <div class="team-card">
-                    <div class="team-icon">🎸</div>
-                    <h3>Les Beatles</h3>
-                    <p>Les pros de l'écoute ! Pour une première mondiale, ils vont échanger autour d'une carte mentale avec les Rolling Stones.</p>
+            <div class="instructions-section">
+                <div class="instruction-card">
+                    <h3>👥 Installation et équipe</h3>
+                    <p>Vous allez pouvoir choisir votre équipe et choisir votre espace de travail avec 4 autres personnes.</p>
                 </div>
 
-                <div class="team-card">
-                    <div class="team-icon">🎤</div>
-                    <h3>Les Rolling Stones</h3>
-                    <p>Les experts de l'écoute active ! Ils vont partager leurs découvertes avec les Beatles dans un échange historique.</p>
+                <div class="instruction-card">
+                    <h3>📚 Ressources</h3>
+                    <p>Mettez-vous à l'aise, utilisez les documents à votre disposition.</p>
                 </div>
 
-                <div class="team-card">
-                    <div class="team-icon">📻</div>
-                    <h3>FLEX Experts - Le Pilote</h3>
-                    <p>Guide à distance ses 4 collègues avec un talkie-walkie pour finir la mission en temps et en heure !</p>
-                </div>
-
-                <div class="team-card">
-                    <div class="team-icon">🕵️</div>
-                    <h3>FLEX Experts - Les Lecteurs</h3>
-                    <p>4 détectives sur le terrain qui recherchent les 6 lettres du mot code mystère !</p>
-                </div>
-
-                <div class="team-card">
-                    <div class="team-icon">🃏</div>
-                    <h3>FLEX Battle</h3>
-                    <p>Les joueurs vont redoubler d'éloquence dans la bonne humeur pour remporter la victoire !</p>
-                </div>
-
-                <div class="team-card">
-                    <div class="team-icon">⏱️</div>
-                    <h3>L'Escape Team</h3>
-                    <p>Ils vont courir, pester et essayer de trouver les 5 codes en moins de 15 minutes. Il faudra se serrer les coudes !</p>
+                <div class="instruction-card">
+                    <h3>🚀 Lancement</h3>
+                    <p>Commencez par vous présenter et indiquer votre intérêt pour la classe flexible et lancez-vous dans l'aventure !</p>
                 </div>
             </div>
 
@@ -1034,8 +1092,8 @@
             </div>
 
             <div class="final-message">
-                <h3>🍀 Bonne chance !</h3>
-                <p>Tu as des questions ?</p>
+                <h3>🎪 Choisissez votre équipe</h3>
+                <p>Cliquez sur "Continuer" pour accéder au dashboard et découvrir les missions !</p>
             </div>
         </div>
 
@@ -1043,7 +1101,7 @@
             ← Retour
         </button>
         <button class="nav-button btn-dashboard" onclick="nextPage()">
-            Accéder au Dashboard →
+            Continuer →
         </button>
     </div>
 
