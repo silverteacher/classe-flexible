@@ -570,6 +570,92 @@
             font-size: 1.1em;
         }
 
+        /* SECTION AFFICHAGE VAINQUEURS */
+        .winners-display {
+            background: linear-gradient(135deg, rgba(243,156,18,0.15), rgba(253,203,110,0.15));
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 3px solid rgba(243,156,18,0.4);
+            box-shadow: 0 10px 30px rgba(243,156,18,0.3);
+            animation: fadeInPodium 0.6s ease;
+        }
+
+        @keyframes fadeInPodium {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .winners-display h3 {
+            color: #f39c12;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+            50% { text-shadow: 0 0 20px rgba(243,156,18,0.8), 2px 2px 4px rgba(0,0,0,0.1); }
+        }
+
+        .winners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .winner-slot {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .winner-slot.filled {
+            border: 2px solid #f39c12;
+            transform: scale(1.02);
+        }
+
+        .winner-slot.filled:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(243,156,18,0.4);
+        }
+
+        .winner-slot .medal {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: bounce-medal 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce-medal {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .winner-slot .winner-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .winner-slot.empty .winner-name {
+            color: #95a5a6;
+            font-style: italic;
+        }
+
         /* GRILLE DE CARTES FLIP */
         .groups-grid {
             display: grid;
@@ -770,6 +856,83 @@
             border-radius: 25px;
             font-weight: bold;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .winner-badge {
+            background: linear-gradient(135deg, #f39c12 0%, #fdcb6e 100%);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { box-shadow: 0 3px 10px rgba(243,156,18,0.3); }
+            50% { box-shadow: 0 6px 20px rgba(243,156,18,0.6); }
+        }
+
+        .winner-crown {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 3em;
+            animation: rotate-crown 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        @keyframes rotate-crown {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .flip-card.winner {
+            box-shadow: 0 0 30px rgba(243,156,18,0.6);
+        }
+
+        .flip-card.winner .flip-card-front,
+        .flip-card.winner .flip-card-back {
+            border: 3px solid #f39c12;
+        }
+
+        .winner-button {
+            background: linear-gradient(135deg, #f39c12 0%, #fdcb6e 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(243,156,18,0.3);
+        }
+
+        .winner-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243,156,18,0.5);
+        }
+
+        .winner-button.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .winner-section {
+            background: rgba(243,156,18,0.15);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid rgba(243,156,18,0.3);
+            text-align: center;
+        }
+
+        .winner-section h4 {
+            color: #f39c12;
+            font-size: 1.3em;
+            margin-bottom: 10px;
         }
 
         .app-link {
@@ -1153,6 +1316,25 @@
                 <p>Découvrez les missions et suivez la progression de chaque équipe</p>
             </div>
 
+            <!-- SECTION VAINQUEURS -->
+            <div class="winners-display" id="winners-display" style="display: none;">
+                <h3>🏆 Podium des Vainqueurs 🏆</h3>
+                <div class="winners-grid">
+                    <div class="winner-slot" id="winner-slot-1">
+                        <div class="medal">🥇</div>
+                        <div class="winner-name">1ère place</div>
+                    </div>
+                    <div class="winner-slot" id="winner-slot-2">
+                        <div class="medal">🥈</div>
+                        <div class="winner-name">2ème place</div>
+                    </div>
+                    <div class="winner-slot" id="winner-slot-3">
+                        <div class="medal">🥉</div>
+                        <div class="winner-name">3ème place</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="groups-grid">
                 <!-- CARTE 1: BEATLES -->
                 <div class="flip-card beatles-card" onclick="flipCard(this)">
@@ -1164,6 +1346,7 @@
                             <div class="click-hint">👆 Cliquez pour révéler</div>
                         </div>
                         <div class="flip-card-back">
+                            <div class="winner-crown" style="display: none;">👑</div>
                             <div class="card-back-header">
                                 <div class="card-back-title">🎸 Les Beatles</div>
                                 <div class="progress-badge" id="progress-beatles">0%</div>
@@ -1189,6 +1372,9 @@
                                     <label for="beatles-4">✅ Phase 4 : Échange avec Rolling Stones</label>
                                 </div>
                             </div>
+                            <button class="winner-button" id="winner-btn-beatles" onclick="toggleWinner('beatles'); event.stopPropagation();">
+                                🏆 Ajouter au podium
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1203,6 +1389,7 @@
                             <div class="click-hint">👆 Cliquez pour révéler</div>
                         </div>
                         <div class="flip-card-back">
+                            <div class="winner-crown" style="display: none;">👑</div>
                             <div class="card-back-header">
                                 <div class="card-back-title">🎤 Rolling Stones</div>
                                 <div class="progress-badge" id="progress-stones">0%</div>
@@ -1228,6 +1415,9 @@
                                     <label for="stones-4">✅ Phase 4 : Échange avec Beatles</label>
                                 </div>
                             </div>
+                            <button class="winner-button" id="winner-btn-stones" onclick="toggleWinner('stones'); event.stopPropagation();">
+                                🏆 Ajouter au podium
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1269,6 +1459,7 @@
                             <div class="click-hint">👆 Cliquez pour révéler</div>
                         </div>
                         <div class="flip-card-back">
+                            <div class="winner-crown" style="display: none;">👑</div>
                             <div class="card-back-header">
                                 <div class="card-back-title">🕵️ Les 4 Lecteurs</div>
                                 <div class="progress-badge" id="progress-experts">0%</div>
@@ -1286,6 +1477,9 @@
                                     <label for="experts-2">✅ Défi final réussi - QR code colorié</label>
                                 </div>
                             </div>
+                            <button class="winner-button" id="winner-btn-experts" onclick="toggleWinner('experts'); event.stopPropagation();">
+                                🏆 Ajouter au podium
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1326,6 +1520,7 @@
                             <div class="click-hint">👆 Cliquez pour révéler</div>
                         </div>
                         <div class="flip-card-back">
+                            <div class="winner-crown" style="display: none;">👑</div>
                             <div class="card-back-header">
                                 <div class="card-back-title">⏱️ Escape Team</div>
                                 <div class="progress-badge" id="progress-escape">0%</div>
@@ -1351,6 +1546,9 @@
                                     <label for="escape-4">✅ Phase 4 : Escape réussi</label>
                                 </div>
                             </div>
+                            <button class="winner-button" id="winner-btn-escape" onclick="toggleWinner('escape'); event.stopPropagation();">
+                                🏆 Ajouter au podium
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1433,6 +1631,7 @@
             });
 
             updateGlobalStats();
+            updateWinnerDisplay();
         });
 
         // Gestion des jetons
@@ -1448,6 +1647,90 @@
             setTimeout(() => {
                 display.style.transform = 'scale(1)';
             }, 200);
+        }
+
+        // Gestion du vainqueur (jusqu'à 3 équipes)
+        function toggleWinner(group) {
+            let winners = JSON.parse(localStorage.getItem('winners') || '[]');
+            
+            const index = winners.indexOf(group);
+            
+            if (index !== -1) {
+                // Retirer du podium
+                winners.splice(index, 1);
+            } else {
+                // Ajouter au podium si moins de 3 vainqueurs
+                if (winners.length < 3) {
+                    winners.push(group);
+                } else {
+                    alert('⚠️ Vous avez déjà 3 équipes sur le podium ! Retirez-en une pour en ajouter une nouvelle.');
+                    return;
+                }
+            }
+            
+            localStorage.setItem('winners', JSON.stringify(winners));
+            updateWinnerDisplay();
+        }
+
+        function updateWinnerDisplay() {
+            const winners = JSON.parse(localStorage.getItem('winners') || '[]');
+            const groups = ['beatles', 'stones', 'experts', 'escape'];
+            
+            const groupNames = {
+                'beatles': '🎸 Les Beatles',
+                'stones': '🎤 Rolling Stones',
+                'experts': '🕵️ Les Lecteurs',
+                'escape': '⏱️ Escape Team'
+            };
+            
+            // Mettre à jour l'affichage du podium
+            const winnersDisplay = document.getElementById('winners-display');
+            if (winners.length > 0) {
+                winnersDisplay.style.display = 'block';
+                
+                // Mettre à jour les 3 slots
+                for (let i = 1; i <= 3; i++) {
+                    const slot = document.getElementById(`winner-slot-${i}`);
+                    const winnerName = slot.querySelector('.winner-name');
+                    
+                    if (winners[i-1]) {
+                        slot.classList.add('filled');
+                        slot.classList.remove('empty');
+                        winnerName.textContent = groupNames[winners[i-1]];
+                    } else {
+                        slot.classList.remove('filled');
+                        slot.classList.add('empty');
+                        winnerName.textContent = `${i}${i===1?'ère':'ème'} place`;
+                    }
+                }
+            } else {
+                winnersDisplay.style.display = 'none';
+            }
+            
+            // Mettre à jour les cartes
+            groups.forEach(group => {
+                const card = document.querySelector(`.${group === 'experts' ? 'detectives' : group}-card`);
+                const button = document.getElementById(`winner-btn-${group}`);
+                const crown = card.querySelector('.winner-crown');
+                
+                if (winners.includes(group)) {
+                    const position = winners.indexOf(group) + 1;
+                    card.classList.add('winner');
+                    button.textContent = `❌ Retirer du podium (${position}${position===1?'er':'ème'})`;
+                    button.classList.add('active');
+                    crown.style.display = 'block';
+                    
+                    // Changer la couronne selon la position
+                    if (position === 1) crown.textContent = '🥇';
+                    else if (position === 2) crown.textContent = '🥈';
+                    else if (position === 3) crown.textContent = '🥉';
+                } else {
+                    card.classList.remove('winner');
+                    button.textContent = '🏆 Ajouter au podium';
+                    button.classList.remove('active');
+                    crown.style.display = 'none';
+                }
+            });
         }
 
         // Mise à jour progression
@@ -1538,6 +1821,15 @@
             });
 
             results.flexBataille = { jetons: tokens };
+            
+            const winners = JSON.parse(localStorage.getItem('winners') || '[]');
+            if (winners.length > 0) {
+                results.podium = {
+                    '1ere_place': winners[0] ? groupNames[winners[0]] : null,
+                    '2eme_place': winners[1] ? groupNames[winners[1]] : null,
+                    '3eme_place': winners[2] ? groupNames[winners[2]] : null
+                };
+            }
 
             const blob = new Blob([JSON.stringify(results, null, 2)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
