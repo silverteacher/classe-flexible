@@ -27,7 +27,31 @@
         margin-bottom: 30px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         position: relative;
-        border:3px solid #4A90E2
+        border:3px solid #4A90E2;
+        overflow: hidden;
+    }
+
+    /* IMAGE DE FOND BEATLES */
+    .mission-intro::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        height: 80%;
+        background-image: url('https://silverteacher.github.io/classe-flexible/beatles.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.08;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .mission-intro > * {
+        position: relative;
+        z-index: 1;
     }
 
     .mission-intro h1 {
@@ -842,10 +866,10 @@
             Académie de Lille
             <br>
             📧 
-            <a href="mailto:amelie.silvert@ac-lille.fr">amelie.silvert@ac-lille.fr</a>
+            <a href="/cdn-cgi/l/email-protection#73121e161f1a165d001a1f051601073312105e1f1a1f1f165d1501"><span class="__cf_email__" data-cfemail="84e5e9e1e8ede1aaf7ede8f2e1f6f0c4e5e7a9e8ede8e8e1aae2f6">[email&#160;protected]</span></a>
         </p>
     </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
     let timerInterval = null,
         timeRemaining = 1200,
@@ -994,10 +1018,3 @@
             document.getElementById('final-section').scrollIntoView({behavior:'smooth'});
         },1500);
     }
-
-    function envoyerBeatle(e) {
-        document.getElementById("envoi-msg").innerHTML = '🎸 <span style="color:#5B6FB5">' + e + "</span> part chercher l'enveloppe bonus !<br>🎉 Rendez-vous auprès de l'animateur ! 🎉"
-    }
-    </script>
-</body>
-</html>
