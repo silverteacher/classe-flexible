@@ -86,8 +86,6 @@
         }
     }
 
-
-
     .mission-text {
         background: rgba(240, 247, 255, 0.85);
         padding: 20px;
@@ -815,157 +813,233 @@
             Académie de Lille
             <br>
             📧 
-            <a href="/cdn-cgi/l/email-protection#73121e161f1a165d001a1f051601073312105e1f1a1f1f165d1501"><span class="__cf_email__" data-cfemail="84e5e9e1e8ede1aaf7ede8f2e1f6f0c4e5e7a9e8ede8e8e1aae2f6">[email&#160;protected]</span></a>
+            <a href="mailto:amelie.silvert@ac-lille.fr">amelie.silvert@ac-lille.fr</a>
         </p>
     </footer>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-    let timerInterval = null,
-        timeRemaining = 1200,
-        isRunning = false;
+    // CHRONOMÈTRE
+    let timerInterval = null;
+    let timeRemaining = 1200; // 20 minutes en secondes
+    let isRunning = false;
+    
     function updateTimerDisplay() {
-        const e = Math.floor(timeRemaining / 60),
-            t = timeRemaining % 60,
-            n = document.getElementById("timer-display");
-        n.textContent = `${String(e).padStart(2, "0")}:${String(t).padStart(2, "0")}`,
-        timeRemaining <= 60 && timeRemaining > 0 ? n.className = "timer-display danger" : timeRemaining <= 300 && timeRemaining > 60 ? n.className = "timer-display warning" : n.className = "timer-display"
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const display = document.getElementById('timer-display');
+        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        if (timeRemaining <= 60 && timeRemaining > 0) {
+            display.className = 'timer-display danger';
+        } else if (timeRemaining <= 300 && timeRemaining > 60) {
+            display.className = 'timer-display warning';
+        } else {
+            display.className = 'timer-display';
+        }
     }
+    
     function startTimer() {
-        isRunning || (isRunning = true, document.getElementById("start-btn").disabled = true, document.getElementById("pause-btn").disabled = false, document.getElementById("timer-status").innerHTML = '<span style="color:#50C878;font-weight:600">⏱️ Chronomètre en cours...</span>', timerInterval = setInterval(() => {
-            timeRemaining > 0 ? (timeRemaining--, updateTimerDisplay()) : (clearInterval(timerInterval), isRunning = false, document.getElementById("timer-status").innerHTML = '<span style="color:#E74C3C;font-weight:600">⏰ TEMPS ÉCOULÉ !</span>')
-        }, 1000))
+        if (!isRunning) {
+            isRunning = true;
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('pause-btn').disabled = false;
+            document.getElementById('timer-status').innerHTML = '<span style="color:#50C878;font-weight:600">⏱️ Chronomètre en cours...</span>';
+            
+            timerInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    document.getElementById('timer-status').innerHTML = '<span style="color:#E74C3C;font-weight:600">⏰ TEMPS ÉCOULÉ !</span>';
+                }
+            }, 1000);
+        }
     }
+    
     function pauseTimer() {
-        isRunning && (clearInterval(timerInterval), isRunning = false, document.getElementById("start-btn").disabled = false, document.getElementById("pause-btn").disabled = true, document.getElementById("timer-status").innerHTML = '<span style="color:#FFA94D;font-weight:600">⏸️ Chronomètre en pause</span>')
+        if (isRunning) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('pause-btn').disabled = true;
+            document.getElementById('timer-status').innerHTML = '<span style="color:#FFA94D;font-weight:600">⏸️ Chronomètre en pause</span>';
+        }
     }
+    
     function resetTimer() {
-        clearInterval(timerInterval),
-        isRunning = false,
-        timeRemaining = 1200,
-        updateTimerDisplay(),
-        document.getElementById("start-btn").disabled = false,
-        document.getElementById("pause-btn").disabled = true,
-        document.getElementById("timer-status").textContent = ""
+        clearInterval(timerInterval);
+        isRunning = false;
+        timeRemaining = 1200;
+        updateTimerDisplay();
+        document.getElementById('start-btn').disabled = false;
+        document.getElementById('pause-btn').disabled = true;
+        document.getElementById('timer-status').textContent = '';
     }
-    function majProgression(e) {
-        for (let t = 1; t <= 4; t++)
-            document.getElementById("step" + t).className = "step" + (t <= e ? " active" : "")
+    
+    // PROGRESSION
+    function majProgression(etape) {
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById("step" + i).className = "step" + (i <= etape ? ' active' : '');
+        }
     }
+    
+    // NOTES
     const notesEl = document.getElementById("notes");
-    function exporterNotesTXT() {
-        const e = document.getElementById("notes").value;
-        if (!e.trim())
-            return void alert("Aucune note à exporter !");
-        const t = new Blob([e], {
-                type: "text/plain"
-            }),
-            n = URL.createObjectURL(t),
-            a = document.createElement("a");
-        a.href = n,
-        a.download = "mes_notes_classe_flexible.txt",
-        a.click(),
-        URL.revokeObjectURL(n)
-    }
-    function exporterNotesPDF() {
-        const e = document.getElementById("notes").value;
-        if (!e.trim())
-            return void alert("Aucune note à exporter !");
-        const {jsPDF: t} = window.jspdf,
-            n = new t;
-        n.setFontSize(16),
-        n.text("Mes notes - La classe flexible", 20, 20),
-        n.setFontSize(12);
-        const a = n.splitTextToSize(e, 170);
-        n.text(a, 20, 35),
-        n.save("mes_notes_classe_flexible.pdf")
-    }
-    notesEl.value = localStorage.getItem("lflex-notes") || "",
+    notesEl.value = localStorage.getItem("lflex-notes") || "";
     notesEl.oninput = () => {
-        localStorage.setItem("lflex-notes", notesEl.value),
-        document.getElementById("notes-status").textContent = "Notes sauvegardées !",
+        localStorage.setItem("lflex-notes", notesEl.value);
+        document.getElementById('notes-status').textContent = "Notes sauvegardées !";
         setTimeout(() => {
-            document.getElementById("notes-status").textContent = ""
-        }, 1500)
+            document.getElementById('notes-status').textContent = '';
+        }, 1500);
     };
+    
+    function exporterNotesTXT() {
+        const notes = document.getElementById('notes').value;
+        if (!notes.trim()) {
+            alert('Aucune note à exporter !');
+            return;
+        }
+        const blob = new Blob([notes], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mes_notes_classe_flexible.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    
+    function exporterNotesPDF() {
+        const notes = document.getElementById('notes').value;
+        if (!notes.trim()) {
+            alert('Aucune note à exporter !');
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Mes notes - La classe flexible', 20, 20);
+        doc.setFontSize(12);
+        const lignes = doc.splitTextToSize(notes, 170);
+        doc.text(lignes, 20, 35);
+        doc.save('mes_notes_classe_flexible.pdf');
+    }
+    
+    // AUDIO 1 - Affiche la première question à la fin
     const audio1 = document.getElementById("audio1");
     audio1.addEventListener("ended", function() {
-        document.getElementById("question-q1").classList.remove("hidden")
+        document.getElementById("question-q1").classList.remove("hidden");
     });
+    
+    // AUDIO 2 - Affiche la deuxième question à la fin
     const audio2 = document.getElementById("audio2");
     audio2.addEventListener("ended", function() {
-        document.getElementById("question-q2").classList.remove("hidden")
+        document.getElementById("question-q2").classList.remove("hidden");
     });
+    
+    // AUDIO 3 - Affiche la troisième question à la fin
     const audio3 = document.getElementById("audio3");
-    function majEssais1() {
-        document.getElementById("essai1-count").textContent = "Essais : " + essais1
-    }
     audio3.addEventListener("ended", function() {
-        document.getElementById("question-q3").classList.remove("hidden")
+        document.getElementById("question-q3").classList.remove("hidden");
     });
+    
+    // SYSTÈME D'ESSAIS
     let essais1 = parseInt(localStorage.getItem("lflex-essais1") || "0");
-    function verifierClef1(e) {
-        const t = document.getElementById("input-clef1").value.trim().toLowerCase().replace(/[\s\-]/g, "");
-        essais1++; localStorage.setItem("lflex-essais1", essais1); majEssais1();
-        if (["electrostatique", "electrostatiques", "électrostatique", "électrostatiques"].includes(t)) {
+    let essais2 = parseInt(localStorage.getItem("lflex-essais2") || "0");
+    
+    function majEssais1() {
+        document.getElementById("essai1-count").textContent = "Essais : " + essais1;
+    }
+    
+    function majEssais2() {
+        document.getElementById("essai2-count").textContent = "Essais : " + essais2;
+    }
+    
+    // QUESTION 1
+    function verifierClef1(form) {
+        const val = document.getElementById("input-clef1").value.trim().toLowerCase().replace(/[\s\-]/g, "");
+        essais1++;
+        localStorage.setItem("lflex-essais1", essais1);
+        majEssais1();
+        
+        if (["electrostatique", "electrostatiques", "électrostatique", "électrostatiques"].includes(val)) {
             majProgression(2);
             document.getElementById("clef1-msg").innerHTML = '<span class="success">✅ Bravo ! Passons à la suite</span>';
             setTimeout(() => {
                 document.getElementById("audio2-section").classList.remove("hidden");
-                document.getElementById("audio2-section").scrollIntoView({behavior: "smooth"})
+                document.getElementById("audio2-section").scrollIntoView({ behavior: "smooth" });
             }, 700);
             return false;
         }
+        
         document.getElementById("clef1-msg").innerHTML = '<span class="error">❌ Non, essayez encore !</span>';
         if (essais1 >= 3) {
             document.getElementById("clef1-hint").classList.remove("hidden");
-            document.getElementById("clef1-hint").textContent = "💡 Indice : les feuilles sont détachables et déplaçables grâce à une charge statique"
+            document.getElementById("clef1-hint").textContent = "💡 Indice : les feuilles sont détachables et déplaçables grâce à une charge statique";
         }
         return false;
     }
-    function majEssais2() {
-        document.getElementById("essai2-count").textContent = "Essais : " + essais2
-    }
-    majEssais1();
-    let essais2 = parseInt(localStorage.getItem("lflex-essais2") || "0");
-    function verifierClef2(e) {
-        const t = document.getElementById("input-clef2").value.trim().toLowerCase();
-        essais2++; localStorage.setItem("lflex-essais2", essais2); majEssais2();
-        if ("collaboratif" === t) {
+    
+    // QUESTION 2
+    function verifierClef2(form) {
+        const val = document.getElementById("input-clef2").value.trim().toLowerCase();
+        essais2++;
+        localStorage.setItem("lflex-essais2", essais2);
+        majEssais2();
+        
+        if (val === "collaboratif") {
             majProgression(3);
             document.getElementById("clef2-msg").innerHTML = '<span class="success">✅ Bravo ! Passons à la suite</span>';
             setTimeout(() => {
                 document.getElementById("audio3-section").classList.remove("hidden");
-                document.getElementById("audio3-section").scrollIntoView({behavior: "smooth"})
+                document.getElementById("audio3-section").scrollIntoView({ behavior: "smooth" });
             }, 700);
             return false;
         }
+        
         document.getElementById("clef2-msg").innerHTML = '<span class="error">❌ Non, essayez de nouveau !</span>';
         return false;
     }
-    function verifierMotCode(e) {
-        const t = document.getElementById("input-motcode").value.trim().toLowerCase().replace(/[\s\-']/g, "");
-        if (["lesmodalites", "lesmodalités", "modalites", "modalités"].includes(t)) {
+    
+    // QUESTION 3 (MOT CODE)
+    function verifierMotCode(form) {
+        const val = document.getElementById("input-motcode").value.trim().toLowerCase().replace(/[\s\-']/g, "");
+        
+        if (["lesmodalites", "lesmodalités", "modalites", "modalités"].includes(val)) {
             document.getElementById("motcode-msg").innerHTML = '<span class="success">🎉 Excellent ! Vous avez trouvé le mot code !</span>';
             majProgression(4);
             setTimeout(() => {
                 document.getElementById("mindmap-section").classList.remove("hidden");
-                document.getElementById("mindmap-section").scrollIntoView({behavior: "smooth"})
+                document.getElementById("mindmap-section").scrollIntoView({ behavior: "smooth" });
             }, 700);
             return false;
         }
+        
         document.getElementById("motcode-msg").innerHTML = '<span class="error">❌ Ce n\'est pas le bon mot code. Réécoutez attentivement l\'audio !</span>';
         return false;
     }
-    majEssais2();
-
-    // VALIDATION CARTE MENTALE SIMPLIFIÉE
-    function validerCarteMentale(){
-        document.getElementById('validation-carte').innerHTML='🎉 <strong>Parfait ! Votre carte mentale et vos échanges sont validés !</strong>';
-        document.getElementById('validation-carte').classList.remove('hidden');
-        setTimeout(()=>{
-            document.getElementById('final-section').classList.remove('hidden');
-            document.getElementById('final-section').scrollIntoView({behavior:'smooth'});
-        },1500);
-    }
-
     
+    // VALIDATION CARTE MENTALE
+    function validerCarteMentale() {
+        document.getElementById('validation-carte').innerHTML = '🎉 <strong>Parfait ! Votre carte mentale et vos échanges sont validés !</strong>';
+        document.getElementById('validation-carte').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('final-section').classList.remove('hidden');
+            document.getElementById('final-section').scrollIntoView({ behavior: 'smooth' });
+        }, 1500);
+    }
+    
+    // ENVOI D'UN BEATLE
+    function envoyerBeatle(nom) {
+        document.getElementById('envoi-msg').innerHTML = '🎵 <strong style="color:#4A90E2;">' + nom + ' est parti chercher l\'enveloppe ! Allez la récupérer auprès de l\'animateur !</strong> 🎶';
+    }
+    
+    // Initialisation des compteurs d'essais
+    majEssais1();
+    majEssais2();
+    </script>
+</body>
+</html>
